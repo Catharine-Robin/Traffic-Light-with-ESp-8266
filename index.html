@@ -4,8 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Traffic Light Control</title>
+    <style>
+        .connected {
+            color: green;
+        }
+        .disconnected {
+            color: red;
+        }
+    </style>
 </head>
 <body>
+    <h1>Traffic Light Control</h1>
     <label for="command">Select a command:</label>
     <select id="command">
         <option value="red">Turn Red Light On</option>
@@ -14,12 +23,13 @@
         <option value="off">Turn All Lights Off</option>
     </select>
     <button onclick="sendCommand()">Send Command</button>
+    <p>ESP8266 Connectivity Status: <span id="connectionStatus" class="disconnected">Disconnected</span></p>
     
     <script>
         function sendCommand() {
             var command = document.getElementById("command").value;
             var ipAddress = "192.168.137.110"; // Replace with your ESP8266 module's IP address
-            var url = `https://${ipAddress}/command?cmd=${command}`; // Use HTTPS for the resource URL
+            var url = `http://${ipAddress}/command?cmd=${command}`;
 
             fetch(url)
             .then(response => {
@@ -35,6 +45,32 @@
                 console.error('There was a problem with the fetch operation:', error);
             });
         }
+
+        function checkConnection() {
+            var ipAddress = "192.168.137.110"; // Replace with your ESP8266 module's IP address
+            var pingUrl = `http://${ipAddress}`;
+
+            fetch(pingUrl)
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById("connectionStatus").textContent = "Connected";
+                    document.getElementById("connectionStatus").classList.remove("disconnected");
+                    document.getElementById("connectionStatus").classList.add("connected");
+                } else {
+                    document.getElementById("connectionStatus").textContent = "Disconnected";
+                    document.getElementById("connectionStatus").classList.remove("connected");
+                    document.getElementById("connectionStatus").classList.add("disconnected");
+                }
+            })
+            .catch(error => {
+                console.error('There was a problem checking connection:', error);
+            });
+        }
+
+        // Check connection status on page load
+        checkConnection();
+        // Check connection status every 5 seconds
+        setInterval(checkConnection, 5000);
     </script>
 </body>
 </html>
