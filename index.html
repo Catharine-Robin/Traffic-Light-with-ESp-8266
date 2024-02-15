@@ -19,7 +19,7 @@
         function sendCommand() {
             var command = document.getElementById("command").value;
             var ipAddress = "192.168.137.110"; // Replace with your ESP8266 module's IP address
-            var url = `http://${ipAddress}/command?cmd=${command}`;
+            var url = `https://${ipAddress}/command?cmd=${command}`; // Use HTTPS for the resource URL
 
             fetch(url)
             .then(response => {
