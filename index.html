@@ -1,55 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Traffic Light Control</title>
-  <style>
-    button {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 18px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Light Control</title>
 </head>
 <body>
-  <h1>Traffic Light Control</h1>
-  <button id="redBtn">Red</button>
-  <button id="yellowBtn">Yellow</button>
-  <button id="greenBtn">Green</button>
-  <button id="offBtn">Off</button>
+    <label for="command">Select a command:</label>
+    <select id="command">
+        <option value="red">Turn Red Light On</option>
+        <option value="yellow">Turn Yellow Light On</option>
+        <option value="green">Turn Green Light On</option>
+        <option value="off">Turn All Lights Off</option>
+    </select>
+    <button onclick="sendCommand()">Send Command</button>
+    
+    <script>
+        function sendCommand() {
+            var command = document.getElementById("command").value;
+            var ipAddress = "192.168.137.110"; // Replace with your ESP8266 module's IP address
+            var url = `http://${ipAddress}/command?cmd=${command}`;
 
-  <script>
-    function sendCommand(command) {
-      var ipAddress = "192.168.137.110"; // Replace with your ESP8266 IP address
-      var url = `http://${ipAddress}/command?cmd=${command}`;
-
-      fetch(url)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-        })
-        .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
-        });
-    }
-
-    document.getElementById("redBtn").addEventListener("click", function() {
-      sendCommand("red");
-    });
-
-    document.getElementById("yellowBtn").addEventListener("click", function() {
-      sendCommand("yellow");
-    });
-
-    document.getElementById("greenBtn").addEventListener("click", function() {
-      sendCommand("green");
-    });
-
-    document.getElementById("offBtn").addEventListener("click", function() {
-      sendCommand("off");
-    });
-  </script>
+            fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                console.log('Command sent:', data);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+    </script>
 </body>
 </html>
