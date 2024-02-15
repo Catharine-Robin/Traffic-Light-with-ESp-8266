@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traffic Light Control</title>
+  <style>
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Traffic Light Control</h1>
+  <button id="redBtn">Red</button>
+  <button id="yellowBtn">Yellow</button>
+  <button id="greenBtn">Green</button>
+  <button id="offBtn">Off</button>
+
+  <script>
+    function sendCommand(command) {
+      var ipAddress = "192.168.137.110"; // Replace with your ESP8266 IP address
+      var url = `http://${ipAddress}/command?cmd=${command}`;
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+    document.getElementById("redBtn").addEventListener("click", function() {
+      sendCommand("red");
+    });
+
+    document.getElementById("yellowBtn").addEventListener("click", function() {
+      sendCommand("yellow");
+    });
+
+    document.getElementById("greenBtn").addEventListener("click", function() {
+      sendCommand("green");
+    });
+
+    document.getElementById("offBtn").addEventListener("click", function() {
+      sendCommand("off");
+    });
+  </script>
+</body>
+</html>
